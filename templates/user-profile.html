@@ -1,0 +1,333 @@
+{% extends 'master.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa">
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پروفایل کاربر</title>
+    <link href="https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'assets/style.css' %}">
+    <style>.red-banner {
+  width: 100%;
+  max-width: 1100px;
+  background: #20c997;
+  color: #0c7559;
+  font-size: 1.08rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 14px 0;
+  margin: 0 auto 18px auto;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 2px 8px rgba(231,76,60,0.13);
+  letter-spacing: 0.01em;
+}
+@media (max-width: 700px) {
+    .red-banner {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        font-size: 0.98rem;
+        padding: 10px 0;
+        border-radius: 0 0 10px 10px;
+        margin-bottom: 10px;
+    }
+}
+</style>
+    <style>
+        
+        .profile-page { min-height: 70vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        @keyframes profileBoxFadeIn {
+  from { opacity: 0; transform: translateY(40px) scale(0.97); }
+  80% { opacity: 1; transform: translateY(-8px) scale(1.03); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+        .profile-box {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(80,201,195,0.13);
+  padding: 32px 24px;
+  max-width: 440px;
+  width: 100%;
+  margin: 48px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  animation: profileBoxFadeIn 0.9s cubic-bezier(.5,1.8,.5,1);
+}
+        .profile-avatar-box { display: flex; flex-direction: column; align-items: center; margin-bottom: 18px; }
+        .profile-avatar {
+            width: 92px; height: 92px; border-radius: 50%; object-fit: cover; border: 3px solid #50c9c3; background: #f7f7f7;
+        }
+        .profile-avatar-upload {
+            margin-top: 8px;
+            font-size: 0.98rem;
+            color: #50c9c3;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .profile-form {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 16px;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  position: relative;
+}
+.profile-form > div {
+  flex: 0 1 calc(50% - 12px);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+  box-sizing: border-box;
+}
+        .profile-input-label { font-size: 1rem; color: #232526; margin-bottom: 4px; font-weight: 500; padding-right: 2px; }
+        .profile-input { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid #e0e0e0; font-size: 1rem; background: #fafafa; box-sizing: border-box; margin-bottom: 0; }
+        .profile-btn {
+  background: linear-gradient(90deg,#50c9c3 0%,#232526 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 0;
+  font-size: 1.08rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 24px;
+  width: 100%;
+  display: block;
+  box-shadow: 0 2px 8px rgba(80,201,195,0.10);
+  position: relative;
+  left: 0;
+}
+.profile-btn:hover {
+  background: linear-gradient(90deg,#232526 0%,#50c9c3 100%);
+}
+.profile-avatar-form .profile-btn {
+  background: linear-gradient(90deg,#f7f7f7 0%,#e0e0e0 100%);
+  color: #232526;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 10px 0;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 10px;
+  max-width: 180px;
+  box-shadow: none;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.profile-avatar-form .profile-btn:hover {
+  background: #f0f0f0;
+  color: #50c9c3;
+  border: 1px solid #50c9c3;
+}
+        @media (max-width: 700px) {
+    .profile-box {
+        max-width: 98vw;
+        width: 96vw;
+        padding: 12vw 4vw 8vw 4vw;
+        border-radius: 12px;
+        margin: 24px auto;
+        box-sizing: border-box;
+    }
+    .profile-avatar {
+        width: 96px;
+        height: 96px;
+    }
+    .navbar-profile-btn img,
+    .mobile-profile-container img {
+        width: 54px !important;
+        height: 54px !important;
+        border: none !important;
+    }
+    .profile-form {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 18px 16px;
+        align-items: stretch;
+        justify-content: space-between;
+    }
+    .profile-form > div {
+        width: calc(50% - 8px);
+        flex: 0 1 calc(50% - 8px);
+        min-width: 120px;
+        margin-bottom: 0;
+        box-sizing: border-box;
+    }
+    .profile-btn {
+        width: 100%;
+        margin-top: 24px;
+        border-radius: 12px;
+        padding: 14px 0;
+        font-size: 1.08rem;
+    }
+}
+@media (max-width: 700px) {
+  .user-project-box {
+    max-width: 84vw !important;
+    width: 84vw !important;
+    padding: 12px 6px 10px 6px !important;
+    border-radius: 8px !important;
+    font-size: 0.93rem !important;
+  }
+  .user-project-box > div:nth-child(2) {
+    margin-top: 32px !important;
+  }
+}
+
+.user-projects-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 18px;
+  justify-content: center;
+  margin: 0 32px 48px 0;
+}
+.user-project-box {
+  margin: 0 !important;
+  justify-self: end;
+  flex: 0 0 340px;
+  max-width: 340px;
+  opacity: 0;
+  transform: translateY(40px) scale(0.97);
+  animation: userProjectFadeIn 0.8s cubic-bezier(.5,1.8,.5,1) forwards;
+}
+.user-project-box:nth-child(1) { animation-delay: 0.08s; }
+.user-project-box:nth-child(2) { animation-delay: 0.16s; }
+.user-project-box:nth-child(3) { animation-delay: 0.24s; }
+.user-project-box:nth-child(4) { animation-delay: 0.32s; }
+.user-project-box:nth-child(5) { animation-delay: 0.40s; }
+.user-project-box:nth-child(6) { animation-delay: 0.48s; }
+.user-project-box:nth-child(7) { animation-delay: 0.56s; }
+.user-project-box:nth-child(8) { animation-delay: 0.64s; }
+@keyframes userProjectFadeIn {
+  from { opacity: 0; transform: translateY(40px) scale(0.97); }
+  80% { opacity: 1; transform: translateY(-8px) scale(1.03); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (max-width: 1800px) {
+  .user-projects-grid {
+    justify-content: flex-start;
+  }
+}
+@media (max-width: 1700px) {
+  .user-project-box {
+    flex: 0 0 31%;
+    max-width: 31%;
+  }
+}
+@media (max-width: 1200px) {
+  .user-project-box {
+    flex: 0 0 48%;
+    max-width: 48%;
+  }
+}
+@media (max-width: 900px) {
+  .user-projects-grid {
+    align-items: center;
+    width: 100%;
+    margin: 0 0 32px 0;
+    gap: 18px 0;
+  }
+  .user-project-box {
+    flex: none;
+    max-width: 98vw;
+    width: 98vw;
+    margin: 0 auto 18px auto !important;
+  }
+}
+
+.profile-input,
+.profile-input-label,
+.profile-btn,
+.profile-form > div,
+.profile-form > div * {
+  font-family: 'Vazir', sans-serif !important;
+}
+.profile-input::placeholder {
+  font-family: 'Vazir', sans-serif !important;
+  font-size: 1rem !important;
+  color: #888 !important;
+  text-align: right !important;
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- نوبار -->
+    <div class="main-bg">
+{% include '_partials/messages.html' %}
+    <!-- پروفایل -->
+    <div class="profile-page">
+        <div class="profile-box">
+            <form class="profile-avatar-form" style="width:100%;display:flex;flex-direction:column;align-items:center;margin-bottom:18px;" action="{% url 'prof_user' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="profile-avatar-box">
+                    <img src="{{ prof.img.url }}" alt="پروفایل" class="profile-avatar" id="profileAvatarPreview">
+                    <label class="profile-avatar-upload" for="profileAvatarInput">تغییر عکس پروفایل</label>
+                    <input type="file" id="profileAvatarInput" accept="image/*" style="display:none;" name="img">
+                </div>
+                <input type="text" value="{{ user.username }}" name="username" hidden="hidden">
+                <input type="number" value="{{ user.id }}" name="user_id" hidden="hidden">
+                <button type="submit" class="profile-btn" style="margin-top:10px;max-width:220px;">ذخیره عکس پروفایل</button>
+            </form>
+            <form class="profile-form" action="{% url 'profile' %}" method="post">
+                {% csrf_token %}
+                <div>
+                    <div class="profile-input-label">نام</div>
+                    <input type="text" class="profile-input" value="{{ user.first_name }}" autocomplete="off" name="name">
+                </div>
+                <div>
+                    <div class="profile-input-label">نام خانوادگی</div>
+                    <input type="text" class="profile-input" value="{{ user.last_name }}" autocomplete="off" name="family">
+                </div>
+                <div>
+                    <div class="profile-input-label">ایمیل</div>
+                    <input type="email" class="profile-input" value="{{ user.email }}" autocomplete="off" name="email">
+                </div>
+                <div>
+                    <div class="profile-input-label">نام کاربری</div>
+                    <input type="text" class="profile-input" value="{{ user.username }}" autocomplete="off" name="username">
+                </div>
+                <button type="submit" class="profile-btn">ذخیره تغییرات</button>
+            </form>
+        </div>
+        <div class="user-projects-grid">
+            {% for pro in proj %}
+            	            
+              <div class="user-project-box" style="background:#fff; border-radius:16px; box-shadow:0 2px 16px rgba(80,201,195,0.13); padding:28px 32px 24px 32px; max-width:340px; width:100%; margin:18px 0 48px 0; position:relative; display:flex; flex-direction:column; align-items:flex-start; text-align:right;">
+                <div style="font-size:1.09rem; font-weight:bold; color:#232526; margin-bottom:8px; width:100%; text-align:center;">نام پروژه: {{ pro.project_name }}</div>
+                <div style="font-size:0.99rem; color:#444; margin-bottom:18px;">{{ pro.project_description }}</div>
+                <a style="background:#50c9c3; color:#fff; font-size:1.01rem; font-weight:bold; padding:8px 22px; border:none; border-radius:8px; cursor:pointer; transition:background 0.18s;" href="{% url 'confirm_project' pro.id %}">باز کردن</a>
+                <div style="position:absolute; right:18px; top:18px; background:#e74c3c; color:#fff; border-radius:50%; width:44px; height:44px; display:flex; align-items:center; justify-content:center; font-size:1.01rem; font-weight:bold; box-shadow:0 2px 8px rgba(231,76,60,0.13);">{% for item in data %}
+                	{% if item.pro.id == pro.id %}
+                		{{ item.unread_count }}پیام
+                	{% endif %} 
+                {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+    <!-- فوتر -->
+    </div>
+<script>
+    document.getElementById('profileAvatarInput').addEventListener('change', function(e) {
+    var file = e.target.files[0];
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+            document.getElementById('profileAvatarPreview').src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+</body>
+{% endblock content %}
+</html>

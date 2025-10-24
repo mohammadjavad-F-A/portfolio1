@@ -1,0 +1,342 @@
+<a id="fixed-exit-btn" href="{% url 'logout' %}" style="position:fixed; bottom:32px; right:32px; width:54px; height:54px; background:#fff; border-radius:50%; box-shadow:0 2px 12px rgba(80,201,195,0.13); display:flex; align-items:center; justify-content:center; z-index:9999; cursor:pointer; transition:box-shadow 0.2s; text-decoration:none;">
+          <span style="font-size:2em; color:#e74c3c;">&#128682;</span>
+        </a>
+    </div>
+        <!-- ====== Footer ====== -->
+         <!-- باکس عکس و توضیح قبل از جدول تیم ما -->
+
+    <footer class="site-footer">
+      <div class="footer-content">
+        <div class="footer-feedback-box">
+          <div class="footer-feedback-title">نظر شما درباره سایت</div>
+          <form class="footer-feedback-form" action="{% url 'contact_site' %}" method="post">
+              {% csrf_token %}
+            <input name="name" type="text" class="footer-feedback-input" placeholder="نام شما">
+            <input name="email" type="email" class="footer-feedback-input" placeholder="ایمیل شما">
+              <input type="text" name="url"  value="{{ request.path }}" hidden="hidden">
+            <textarea name="contact" class="footer-feedback-textarea" placeholder="نظر خود را بنویسید..."></textarea>
+            <button type="submit" class="footer-feedback-btn">ارسال نظر</button>
+          </form>
+        </div>
+        <div class="footer-info">
+          <div class="footer-info-title">درباره سایت</div>
+          <div class="footer-info-desc">کلیه حقوق این وب‌سایت متعلق به Fadaei می‌باشد.
+این وب‌سایت با هدف معرفی نمونه‌کارها، نمایش پروژه‌ها و ایجاد بستری برای همکاری و توسعه ایده‌های دیجیتال طراحی شده است. ما تلاش کرده‌ایم محیطی حرفه‌ای، ساده و کاربرپسند فراهم کنیم تا کاربران بتوانند به‌راحتی پروژه‌های خود را ایجاد، مدیریت و مشاهده کنند.
+طراحی و توسعه توسط تیم Fadaei با تمرکز بر کیفیت، خلاقیت و تجربه کاربری انجام شده است.
+
+</div>
+          <div class="footer-social">
+            <a href="#" title="اینستاگرام"><span style="font-size:1.5em; color:#e1306c; margin-left:8px;">&#128247;</span></a>
+            <a href="#" title="تلگرام"><span style="font-size:1.5em; color:#0088cc; margin-left:8px;">&#128241;</span></a>
+            <a href="#" title="گیت‌هاب"><span style="font-size:1.5em; color:#232526; margin-left:8px;">&#128187;</span></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-copyright">© 2025 Fadaei. All rights reserved.</div>
+    </footer>
+
+    <!-- صفحه ثبت‌نام -->
+
+
+
+ 
+<style>
+.site-card {
+  transition: transform 0.25s cubic-bezier(.5,1.8,.5,1), box-shadow 0.2s;
+}
+.site-card:hover,
+.site-card:focus-within {
+  transform: scale(1.06);
+  box-shadow: 0 6px 24px rgba(80,201,195,0.18);
+  z-index: 2;
+}
+.site-card img {
+  transition: transform 0.25s cubic-bezier(.5,1.8,.5,1);
+}
+.site-card:hover img,
+.site-card img:hover {
+  transform: scale(1.12);
+}
+.site-card .profile-preview-btn {
+  transition: transform 0.22s cubic-bezier(.5,1.8,.5,1), box-shadow 0.18s;
+}
+.site-card .profile-preview-btn:hover {
+  transform: scale(1.11);
+  box-shadow: 0 2px 10px rgba(80,201,195,0.13);
+}
+.red-banner {
+  width: 100%;
+  max-width: 1100px;
+  background: #f14646;
+  color: #922222;
+  font-size: 1.08rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 14px 0;
+  margin: 0 auto 18px auto;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 2px 8px rgba(231,76,60,0.13);
+  letter-spacing: 0.01em;
+}
+@media (max-width: 700px) {
+  .red-banner {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    font-size: 0.98rem;
+    padding: 10px 0;
+    border-radius: 0 0 10px 10px;
+    margin-bottom: 10px;
+  }
+  html, body {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .main-bg {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .content-row, .skills-row, .site-cards-row, .animated-sample-box, .team-table-container, .site-footer {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .site-cards-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 16px 10px !important;
+    justify-content: start !important;
+    align-items: stretch !important;
+    padding-left: 32px !important;
+    padding-right: 8px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+  .site-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 12px 4px !important;
+    box-sizing: border-box !important;
+    border-radius: 14px !important;
+    box-shadow: 0 1px 8px rgba(80,201,195,0.09);
+  }
+  .site-card img {
+    width: 110px !important;
+    height: 66px !important;
+    margin-bottom: 8px !important;
+  }
+  .site-card > div,
+  .site-card .profile-preview-btn {
+    font-size: 0.97rem !important;
+  }
+  .animated-sample-box {
+    flex-direction: column !important;
+    margin: 40px 8px 32px 8px !important;
+    gap: 18px !important;
+    align-items: stretch !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+  }
+  #sample-images-box,
+  #desc-box,
+  #team-how-box {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+    box-sizing: border-box !important;
+    padding: 18px 4vw !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+    #fixed-exit-btn {
+    right: auto !important;
+    left: 32px !important;
+  }
+}
+@keyframes mobileMenuFadeIn {
+  from { opacity: 0; transform: translateY(-24px) scale(0.97); }
+  80% { opacity: 1; transform: translateY(4px) scale(1.03); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.mobile-navbar-menu {
+  animation: mobileMenuFadeIn 0.5s cubic-bezier(.5,1.8,.5,1);
+}
+.mobile-navbar-menu a {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: mobileMenuItemFadeIn 0.5s cubic-bezier(.5,1.8,.5,1) forwards;
+}
+@keyframes mobileMenuItemFadeIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.mobile-navbar-menu a:nth-child(3) { animation-delay: 0.08s; }
+.mobile-navbar-menu a:nth-child(4) { animation-delay: 0.16s; }
+.mobile-navbar-menu a:nth-child(5) { animation-delay: 0.24s; }
+.mobile-navbar-menu a:nth-child(6) { animation-delay: 0.32s; }
+.mobile-navbar-menu a:nth-child(7) { animation-delay: 0.40s; }
+.mobile-navbar-menu a:nth-child(8) { animation-delay: 0.48s; }
+.mobile-navbar-menu a:nth-child(9) { animation-delay: 0.56s; }
+.mobile-navbar-menu a:nth-child(10) { animation-delay: 0.64s; }
+.mobile-navbar-menu a:nth-child(11) { animation-delay: 0.72s; }
+.mobile-navbar-menu a:nth-child(12) { animation-delay: 0.80s; }
+@keyframes fadeInUpBox {
+  from { opacity: 0; transform: translateY(60px) scale(0.97); }
+  80% { opacity: 1; transform: translateY(-8px) scale(1.03); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animated-sample-box {
+  opacity: 0;
+  animation: fadeInUpBox 1s cubic-bezier(.5,1.8,.5,1) forwards;
+}
+.animated-sample-box .animated-img {
+  opacity: 0;
+  animation: fadeInUpBox 0.7s cubic-bezier(.5,1.8,.5,1) forwards;
+}
+.animated-sample-box .animated-img:nth-child(1) { animation-delay: 0.15s; }
+.animated-sample-box .animated-img:nth-child(2) { animation-delay: 0.28s; }
+.animated-sample-box .animated-img:nth-child(3) { animation-delay: 0.41s; }
+.animated-sample-box .animated-img:nth-child(4) { animation-delay: 0.54s; }
+.animated-sample-box .animated-img:nth-child(5) { animation-delay: 0.67s; }
+.animated-sample-box .animated-img:nth-child(6) { animation-delay: 0.8s; }
+.text-box,
+#desc-box,
+#team-how-box,
+.why-site-desc,
+.skills-title,
+
+.footer-info-title,
+.footer-info-desc,
+.footer-feedback-title {
+  text-align: right !important;
+  direction: rtl !important;
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var bars = document.querySelectorAll('.skill-bar-fill');
+  bars.forEach(function(bar) {
+    var targetWidth = bar.getAttribute('data-width');
+    if (targetWidth) {
+      setTimeout(function() {
+        bar.style.width = targetWidth;
+      }, 300);
+    }
+  });
+});
+function closeMobileMenu() {
+    var mobileMenu = document.getElementById('mobileMenu');
+    var menuIcon = document.querySelector('.navbar-menu-icon');
+    if (mobileMenu) mobileMenu.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflow = 'auto';
+    if (menuIcon) menuIcon.classList.remove('active');
+    var ov = document.getElementById('menuOverlay');
+    if (ov) ov.remove();
+}
+
+function toggleMenu() {
+    var mobileMenu = document.getElementById('mobileMenu');
+    var menuIcon = document.querySelector('.navbar-menu-icon');
+    if (window.innerWidth <= 700) {
+        var isOpen = (mobileMenu.style.display === 'none' || mobileMenu.style.display === '') ? false : true;
+        if (!isOpen) {
+            mobileMenu.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
+
+            // create transparent overlay to capture clicks
+            var existing = document.getElementById('menuOverlay');
+            if (!existing) {
+                var ov = document.createElement('div');
+                ov.id = 'menuOverlay';
+                ov.style.position = 'fixed';
+                ov.style.top = '0';
+                ov.style.left = '0';
+                ov.style.width = '100%';
+                ov.style.height = '100%';
+                // sit below the mobile menu (mobile menu z-index ~300 in CSS)
+                ov.style.zIndex = '250';
+                ov.style.background = 'rgba(0,0,0,0)';
+                document.body.appendChild(ov);
+                // Only close when clicking on left half of the viewport
+                ov.addEventListener('click', function(e) {
+                    if (e.clientX < window.innerWidth / 2) {
+                        closeMobileMenu();
+                    }
+                });
+            }
+
+            setTimeout(function() {
+                var links = mobileMenu.querySelectorAll('a');
+                links.forEach(function(link, i) {
+                    link.style.opacity = '0';
+                    link.style.transform = 'translateY(24px)';
+                    setTimeout(function() {
+                        link.style.opacity = '1';
+                        link.style.transform = 'translateY(0)';
+                    }, 80 + i * 60);
+                });
+            }, 10);
+            menuIcon.classList.add('active');
+        } else {
+            closeMobileMenu();
+        }
+    }
+}
+window.addEventListener('resize', function() {
+    var mobileMenu = document.getElementById('mobileMenu');
+    if (window.innerWidth > 700) {
+        mobileMenu.style.display = 'none';
+    }
+});
+document.getElementById('exitBtn').onclick = function(e) {
+    e.preventDefault();
+    window.location.href = 'https://www.google.com'; // یا هر آدرس خروجی دلخواه
+};
+function showSignup() {
+  document.getElementById('signup-page').style.display = 'block';
+  document.getElementById('login-page').style.display = 'none';
+}
+function showLogin() {
+  document.getElementById('signup-page').style.display = 'none';
+  document.getElementById('login-page').style.display = 'block';
+}
+// نمایش صفحه بر اساس آدرس هشتگ
+window.addEventListener('hashchange', function() {
+  if (location.hash === '#signup') showSignup();
+  else if (location.hash === '#login') showLogin();
+  else {
+    document.getElementById('signup-page').style.display = 'none';
+    document.getElementById('login-page').style.display = 'none';
+  }
+});
+document.getElementById('mobileProfileBtn').onclick = function(e) {
+    e.stopPropagation();
+    var menu = document.getElementById('mobileProfileMenu');
+    menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'flex' : 'none';
+};
+document.addEventListener('click', function(e) {
+    var menu = document.getElementById('mobileProfileMenu');
+    if(menu) menu.style.display = 'none';
+});
+
+</script>

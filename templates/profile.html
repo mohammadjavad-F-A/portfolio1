@@ -1,0 +1,251 @@
+{% extends 'master.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa">
+{% block content %}
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ورود</title>
+  <link href="https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'assets/style.css' %}">
+  <style>
+      .about-container {
+        max-width: 900px;
+        margin: 48px auto 48px auto;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 2px 16px rgba(80,201,195,0.13);
+        padding: 36px 32px;
+        display: flex;
+        flex-direction: row;
+        gap: 36px;
+        align-items: flex-start;
+        opacity: 0;
+        animation: fadeIn 0.8s cubic-bezier(.5,1.8,.5,1) forwards;
+        animation-delay: 0.05s;
+      }
+      .about-profile-img {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #50c9c3;
+        margin-left: 24px;
+      }
+      .about-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+      }
+      .about-title {
+        font-size: 1.35rem;
+        font-weight: bold;
+        color: #232526;
+        margin-bottom: 10px;
+        text-align: right;
+      }
+      .about-desc {
+        font-size: 1.08rem;
+        color: #444;
+        margin-bottom: 18px;
+        text-align: right;
+        line-height: 2;
+      }
+      .team-row {
+        display: flex;
+        flex-direction: row;
+        gap: 28px;
+        margin-top: 32px;
+        justify-content: flex-start;
+      }
+      .team-card {
+        background: #f7f7f7;
+        border-radius: 14px;
+        box-shadow: 0 2px 10px rgba(80,201,195,0.09);
+        padding: 22px 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 200px;
+        min-width: 0;
+        max-width: 90vw;
+        opacity: 0;
+        animation: fadeIn 0.7s cubic-bezier(.5,1.8,.5,1) forwards;
+      }
+      .team-card:nth-child(1) { animation-delay: 0.18s; }
+      .team-card:nth-child(2) { animation-delay: 0.36s; }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(40px) scale(0.97); }
+        80% { opacity: 1; transform: translateY(-6px) scale(1.03); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      .team-card img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 12px;
+        border: 2px solid #50c9c3;
+      }
+      .team-card .team-name {
+        font-size: 1.08rem;
+        font-weight: bold;
+        color: #232526;
+        margin-bottom: 8px;
+        text-align: center;
+      }
+      .team-card .team-role {
+        font-size: 0.98rem;
+        color: #50c9c3;
+        margin-bottom: 8px;
+        text-align: center;
+      }
+      .team-card .team-desc {
+        font-size: 0.97rem;
+        color: #444;
+        text-align: center;
+      }
+      
+      @media (max-width: 700px) {
+          
+        .about-container {
+          flex-direction: column;
+          padding: 7px 1vw 10px 1vw;
+          gap: 8px;
+          margin: 10px 0 10px 0;
+        }
+        .about-profile-img {
+          margin: 0 auto 6px auto;
+          display: block;
+          width: 68px;
+          height: 68px;
+        }
+        .about-title {
+          font-size: 0.99rem;
+          margin-bottom: 4px;
+        }
+        .about-desc {
+          font-size: 0.93rem;
+          margin-bottom: 7px;
+        }
+        .team-row {
+          flex-direction: row;
+          gap: 7px;
+          align-items: stretch;
+          margin-top: 10px;
+          justify-content: center;
+        }
+        .team-card {
+          width: 100%;
+          max-width: 100vw;
+          padding: 8px 4px;
+        }
+        .team-card img {
+          width: 44px;
+          height: 44px;
+          margin-bottom: 5px;
+        }
+        .team-card .team-name {
+          font-size: 0.93rem;
+          margin-bottom: 4px;
+        }
+        .team-card .team-role {
+          font-size: 0.89rem;
+          margin-bottom: 3px;
+        }
+        .team-card .team-desc {
+          font-size: 0.89rem;
+        }
+      }
+    </style>
+
+</head>
+    {% include '_partials/messages.html' %}
+<body>
+    <div class="main-bg">
+        <!-- بخش درباره من و تیم -->
+        <div class="about-container">
+        {% for foo in abouting %}
+        	 <img src="{{ foo.image.url }}" alt="GitHub Copilot" class="about-profile-img">
+        {% endfor %}
+        
+         
+          <div class="about-info">
+            <div class="about-title">درباره ما</div>
+            <div class="about-desc">
+                {% for foo in abouting %}
+                	{{ foo.title }}
+                {% endfor %}
+                
+            </div>
+            <div class="about-title" style="font-size:1.13rem; margin-bottom:8px;">اعضای تیم</div>
+            <div class="team-row">
+                {% for real in realtor %}
+                	                
+              <div class="team-card">
+                <img src="{{ real.image.url }}" alt="علی محمدی">
+                <div class="team-name">{{ real.first_name }} {{ real.last_name }}</div>
+                <div class="team-role">{{ real.title_0 }}</div>
+                <div class="team-desc">{{ real.title_1 }}</div>
+              </div>
+       
+                {% endfor %}
+
+            </div>
+          </div>
+        </div>
+
+    </div>
+    <script>
+    function toggleMenu() {
+      var mobileMenu = document.getElementById('mobileMenu');
+      var menuIcon = document.querySelector('.navbar-menu-icon');
+      if (window.innerWidth <= 700) {
+          var isOpen = (mobileMenu.style.display === 'none' || mobileMenu.style.display === '') ? false : true;
+          if (!isOpen) {
+              mobileMenu.style.display = 'flex';
+              setTimeout(function() {
+                  var links = mobileMenu.querySelectorAll('a');
+                  links.forEach(function(link, i) {
+                      link.style.opacity = '0';
+                      link.style.transform = 'translateY(24px)';
+                      setTimeout(function() {
+                          link.style.opacity = '1';
+                          link.style.transform = 'translateY(0)';
+                      }, 80 + i * 60);
+                  });
+              }, 10);
+              menuIcon.classList.add('active');
+          } else {
+              mobileMenu.style.display = 'none';
+              menuIcon.classList.remove('active');
+          }
+      }
+    }
+    window.addEventListener('resize', function() {
+      var mobileMenu = document.getElementById('mobileMenu');
+      if (window.innerWidth > 700) {
+          mobileMenu.style.display = 'none';
+      }
+    });
+    document.getElementById('exitBtn').onclick = function(e) {
+      e.preventDefault();
+      window.location.href = 'https://www.google.com';
+    };
+    document.getElementById('mobileProfileBtn').onclick = function(e) {
+      e.stopPropagation();
+      var menu = document.getElementById('mobileProfileMenu');
+      if(menu) menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'flex' : 'none';
+    };
+    document.addEventListener('click', function(e) {
+      var menu = document.getElementById('mobileProfileMenu');
+      if(menu) menu.style.display = 'none';
+    });
+    </script>
+</body>
+	
+{% endblock content%}
+</html>

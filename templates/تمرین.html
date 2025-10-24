@@ -1,0 +1,740 @@
+{% extends 'master.html' %}
+{% load tz %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa">
+{% block content %}
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>تایید پروژه</title>
+        <link href="https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.css" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'assets/style.css' %}">
+        <style>
+            .profile-page {
+                min-height: 70vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            @keyframes profileBoxFadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(40px) scale(0.97);
+                }
+                80% {
+                    opacity: 1;
+                    transform: translateY(-8px) scale(1.03);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+
+            .profile-box {
+                background: #fff;
+                border-radius: 18px;
+                box-shadow: 0 4px 24px rgba(80, 201, 195, 0.13);
+                padding: 32px 24px;
+                max-width: 440px;
+                width: 100%;
+                margin: 48px auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                box-sizing: border-box;
+                animation: profileBoxFadeIn 0.9s cubic-bezier(.5, 1.8, .5, 1);
+            }
+
+            @media (max-width: 700px) {
+                .profile-box {
+                    max-width: 98vw;
+                    width: 96vw;
+                    padding: 12vw 4vw 8vw 4vw;
+                    border-radius: 12px;
+                    margin: 24px auto;
+                    box-sizing: border-box;
+                }
+            }
+
+            .chat-page {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                min-height: 70vh;
+                margin: 0;
+                padding: 0;
+            }
+
+            .chat-container {
+                background: #fff;
+                border-radius: 14px;
+                box-shadow: 0 4px 24px rgba(80, 201, 195, 0.13);
+                width: 100%;
+                max-width: 900px;
+                min-height: 540px;
+                margin: 48px auto 32px auto;
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                box-sizing: border-box;
+                font-family: 'Vazir', sans-serif;
+            }
+
+            .chat-header {
+                padding: 18px 24px 12px 24px;
+                font-size: 1.18rem;
+                font-weight: bold;
+                color: #232526;
+                border-bottom: 1px solid #e0e0e0;
+                text-align: center;
+            }
+
+            @keyframes chatFadeIn {
+                0% {
+                    opacity: 0;
+                    transform: translateY(30px) scale(0.97);
+                }
+                80% {
+                    opacity: 1;
+                    transform: translateY(-6px) scale(1.03);
+                }
+                100% {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+
+            .chat-messages {
+                flex: 1;
+                padding: 18px 24px;
+                overflow-y: auto;
+                background: #f7f7f7;
+                border-radius: 0 0 18px 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                max-height: 520px;
+                animation: chatFadeIn 0.8s cubic-bezier(.5, 1.8, .5, 1);
+            }
+
+            .chat-message {
+                max-width: 70%;
+                padding: 10px 16px;
+                border-radius: 14px;
+                font-size: 1.01rem;
+                line-height: 1.7;
+                word-break: break-word;
+                box-shadow: 0 2px 8px rgba(80, 201, 195, 0.09);
+                animation: chatFadeIn 0.7s cubic-bezier(.5, 1.8, .5, 1);
+                position: relative;
+            }
+
+            .chat-message.dragging {
+                transition: transform 0.2s, background 0.2s;
+                background: #fdeaea !important;
+                box-shadow: 0 4px 24px rgba(231, 76, 60, 0.13);
+                opacity: 0.85;
+            }
+
+            .chat-message-menu-btn {
+                position: absolute;
+                top: 8px;
+                left: 8px;
+                width: 28px;
+                height: 28px;
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 1.5em;
+                color: #888;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 3;
+            }
+
+            .chat-message-menu {
+                position: absolute;
+                top: 36px;
+                left: 8px;
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(80, 201, 195, 0.13);
+                padding: 8px 0;
+                min-width: 120px;
+                font-size: 0.97em;
+                color: #232526;
+                display: none;
+                flex-direction: column;
+                z-index: 10;
+            }
+
+            .chat-message-menu.show {
+                display: flex;
+            }
+
+            a.chat-message-menu-item {
+                color: #e74c3c !important;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                gap: 7px;
+                text-decoration: none;
+                transition: background 0.15s, color 0.15s;
+            }
+
+            a.chat-message-menu-item::before {
+                content: '\1F5D1'; /* آیکون سطل زباله */
+                font-size: 1.1em;
+                margin-left: 2px;
+            }
+
+            a.chat-message-menu-item:hover {
+                background: #fdeaea !important;
+                color: #c0392b !important;
+            }
+
+            div.chat-message-menu-item {
+                color: #232526 !important;
+                font-weight: normal;
+                background: none !important;
+                text-decoration: none;
+                display: block;
+                transition: none;
+            }
+
+            div.chat-message-menu-item:hover {
+                background: #f7f7f7 !important;
+                color: #232526 !important;
+            }
+
+            .chat-message-user {
+                background: linear-gradient(90deg, #50c9c3 0%, #43e97b 100%);
+                color: #fff;
+                align-self: flex-end;
+                position: relative;
+                padding-bottom: 10px;
+            }
+
+            .chat-message-support {
+                background: linear-gradient(90deg, #50c9c3 0%, #2196f3 100%);
+                color: #fff;
+                align-self: flex-start;
+                border: none;
+                position: relative;
+                padding-bottom: 10px;
+            }
+
+            .chat-time {
+                display: inline-block;
+                margin-right: 6px;
+                font-size: 0.93em;
+                color: #272626;
+                vertical-align: middle;
+                font-family: 'Vazir', sans-serif;
+            }
+
+            .chat-message-user.two-tick::after {
+                content: '\2714\2714';
+            }
+
+            .chat-meta {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 8px;
+                margin-top: 4px;
+                font-size: 0.97em;
+                width: 100%;
+                direction: rtl;
+            }
+
+            .chat-input-box {
+                display: flex;
+                align-items: center;
+                padding: 16px 24px;
+                border-top: 1px solid #e0e0e0;
+                background: #fff;
+                border-radius: 0 0 18px 18px;
+                gap: 10px;
+            }
+
+            .chat-input {
+                flex: 1;
+                padding: 10px 14px;
+                border-radius: 8px;
+                border: 1px solid #e0e0e0;
+                font-size: 1rem;
+                font-family: 'Vazir', sans-serif;
+                background: #fafafa;
+                box-sizing: border-box;
+            }
+
+            .chat-input::placeholder {
+                font-family: 'Vazir', sans-serif;
+                color: #888;
+                text-align: right;
+            }
+
+            .chat-send-btn {
+                width: 44px;
+                height: 44px;
+                background: #232526;
+                color: #fff;
+                border: none;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.45em;
+                font-weight: bold;
+                cursor: pointer;
+                box-shadow: 0 2px 8px rgba(80, 201, 195, 0.13);
+                transition: background 0.18s;
+                padding: 0;
+            }
+
+            .chat-send-btn:hover {
+                background: #50c9c3;
+            }
+
+            .chat-send-btn::before {
+                content: '\2191';
+                font-size: 1.45em;
+                font-weight: 900;
+                color: #fff;
+                letter-spacing: -2px;
+            }
+
+            .chat-message-fa {
+                direction: rtl;
+                text-align: right;
+            }
+
+            .chat-message-en {
+                direction: ltr;
+                text-align: left;
+            }
+
+            .chat-date-separator {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 18px 0 8px 0;
+            }
+
+            .chat-date-label {
+                background: #f0f0f0;
+                color: #888;
+                font-size: 0.97rem;
+                font-family: 'Vazir', sans-serif;
+                padding: 6px 18px;
+                border-radius: 16px;
+                box-shadow: 0 1px 6px rgba(80, 201, 195, 0.09);
+                font-weight: 500;
+                letter-spacing: 0.01em;
+            }
+
+            .chat-username {
+                font-size: 0.98em;
+                font-weight: bold;
+                color: #ffffff !important;
+                margin-bottom: 2px;
+                text-align: right;
+            }
+
+            @media (max-width: 900px) {
+                .chat-container {
+                    max-width: 99vw;
+                    min-height: 420px;
+                    margin: 18px auto 18px auto;
+                    border-radius: 12px;
+                }
+
+                .chat-header,
+                .chat-messages,
+                .chat-input-box {
+                    padding: 12px 8px;
+                    border-radius: 0 0 12px 12px;
+                }
+
+                .chat-message {
+                    font-size: 0.98rem;
+                    border-radius: 10px;
+                    padding: 8px 10px;
+                }
+
+                .chat-message-fa {
+                    direction: rtl;
+                    text-align: right;
+                }
+
+                .chat-message-en {
+                    direction: ltr;
+                    text-align: left;
+                }
+            }
+
+            .go-bottom-btn {
+                position: absolute;
+                left: 32px;
+                bottom: 90px;
+                width: 44px;
+                height: 44px;
+                background: #06524e;
+                color: #fff;
+                border-radius: 50%;
+                box-shadow: 0 2px 8px rgba(80, 201, 195, 0.13);
+                display: none;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.7em;
+                cursor: pointer;
+                z-index: 10;
+                transition: background 0.18s;
+                border: none;
+            }
+
+            .go-bottom-btn:hover {
+                background: #2196f3;
+            }
+
+            .chat-container {
+                position: relative;
+            }
+
+            .reply-preview {
+                width: 100%;
+                max-width: none;
+                margin: 0 0 8px 0;
+                background: #f7f7f7;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(80, 201, 195, 0.09);
+                padding: 10px 14px;
+                font-size: 0.98rem;
+                color: #232526;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                direction: rtl;
+                box-sizing: border-box;
+            }
+
+            @media (max-width: 700px) {
+                .reply-preview {
+                    width: 100%;
+                    max-width: 100%;
+                    margin: 0 0 8px 0;
+                    padding: 8px 8px;
+                    font-size: 0.97rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+    <div class="main-bg">
+        <!-- محتوای تایید پروژه اینجا قرار می‌گیرد -->
+        <div class="chat-page">
+            <div class="chat-container">
+                <div class="chat-header">نام پروژه:{{ creative.project_name }}</div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-date-separator"><span class="chat-date-label">{{ creative.created_date }}</span>
+                    </div>
+                    <div class="chat-message chat-message-user chat-message-fa">
+                        <div class="chat-username">{{ creative.user.username }}</div>
+                        {{ creative.project_description }}
+                        <div class="chat-meta">
+                            <span style="font-size:1.18em; color:#888; font-weight:bold;">&#10004;&#10004;</span>
+                            <span class="chat-time">12:21</span>
+                        </div>
+                    </div>
+                    {#                    for#}
+
+                    {% for ms in massage %}
+                        {% if ms.user.is_staff %}
+
+
+
+                            <div class="chat-message chat-message-support chat-message-fa">
+
+                                <div class="chat-username">{{ ms.user.username }}</div>
+                                {{ ms.description }}
+                                <div class="chat-meta">
+                          <span style="font-size:1.18em; color:#0074d9; font-weight:bold;">
+                              {% if ms.user == request.user %}
+                                  {% if ms.read %}
+                                      &#10004;&#10004;
+                                  {% else %}
+
+                                      &#10004;
+
+                                  {% endif %}
+                              {% endif %} 
+                              </span>
+                                    <span class="chat-time">{{ ms.date_2|date:"H:i" }}&nbsp;&nbsp;&nbsp;&nbsp;{{ ms.date_1 }}</span>
+                                </div>
+                            </div>
+                            <div style="display:none; position:absolute; z-index:9999; background:#fff; box-shadow:0 2px 12px rgba(80,201,195,0.13); border-radius:10px; padding:8px 0; min-width:120px; font-family:'Vazir',Tahoma,sans-serif; font-size:1rem; direction:rtl;">
+                                <button class="replyBtn"
+                                        style="display:block;width:100%;background:none;border:none;padding:8px 16px;text-align:right;font-size:1rem;cursor:pointer;color:#232526;font-family:'Vazir',Tahoma,sans-serif;">
+                                    پاسخ دادن
+                                </button>
+                                <a class="deleteBtn" href="admin.html"
+                                   style="display:block;width:100%;background:none;border:none;padding:8px 16px;text-align:right;font-size:1rem;cursor:pointer;color:#e74c3c;font-family:'Vazir',Tahoma,sans-serif;">حذف
+                                    کردن</a>
+                            </div>
+                        {% else %}
+
+
+
+                            <div class="chat-message chat-message-user chat-message-fa">
+                                <div class="chat-username">{{ ms.user.username }}</div>
+                                {{ ms.description }}
+                                <div class="chat-meta">
+                          <span style="font-size:1.18em; color:#888; font-weight:bold;">  {% if ms.user == request.user %}
+                              {% if ms.is_read %}
+                                  &#10004;&#10004;
+                              {% else %}
+                                  &#10004;
+                              {% endif %}
+                          {% endif %} </span>
+                                    <span class="chat-time">{{ ms.date_2|date:"H:i" }}&nbsp;&nbsp;&nbsp;&nbsp;{{ ms.date_1 }}</span>
+                                </div>
+                                <div class="chat-message-menu">
+                                    <a href="#" class="chat-message-menu-item">حذف پیام</a>
+                                    <div class="chat-message-menu-item">تاریخ خوانده شده: ۱۴۰۳/۰۳/۲۵</div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                    {% endfor %}
+
+
+
+
+                    {#                    <div class="chat-date-separator"><span class="chat-date-label">۱۴۰۳/۰۳/۲۵</span></div>#}
+                    {#                    <div class="chat-message chat-message-user chat-message-en">#}
+                    {#                        <div class="chat-username">User</div>#}
+                    {#                        Hi! My project is submitted.#}
+                    {#                        <div class="chat-meta">#}
+                    {#                          <span style="font-size:1.18em; color:#2ecc40; font-weight:bold;">&#10004;&#10004;</span>#}
+                    {#                          <span class="chat-time">13:01</span>#}
+                    {#                        </div>#}
+                    {#                    </div>#}
+                    {#                    <div class="chat-message chat-message-support chat-message-en">#}
+                    {#                        <div class="chat-username">Support</div>#}
+                    {#                        Hello, your project is received and under review.#}
+                    {#                        <div class="chat-meta">#}
+                    {#                          <span style="font-size:1.18em; color:#0074d9; font-weight:bold;">&#10004;&#10004;</span>#}
+                    {#                          <span class="chat-time">13:02</span>#}
+                    {#                        </div>#}
+                    {#                    </div>#}
+                </div>
+                <button class="go-bottom-btn" id="goBottomBtn" title="برو به آخرین پیام">&#8595;</button>
+                <form class="chat-input-box" action="{% url 'confirm_project' creative.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="number" value="{{ creative.id }}" name="confirm_pro" hidden="hidden">
+
+                    <input type="text" value="{{ creative.description }}" name="description_2" hidden="hidden">
+                    <input type="text" id="chatInput" class="chat-input" placeholder="پیام خود را بنویسید..."
+                           name="description">
+                    <button type="submit" class="chat-send-btn" aria-label="ارسال پیام"></button>
+                </form>
+            </div>
+        </div>
+        <a id="fixed-exit-btn" href="user-profile.html"
+           style="position:fixed; bottom:32px; right:32px; width:54px; height:54px; background:#fff; border-radius:50%; box-shadow:0 2px 12px rgba(80,201,195,0.13); display:flex; align-items:center; justify-content:center; z-index:9999; cursor:pointer; transition:box-shadow 0.2s; text-decoration:none;">
+            <span style="font-size:2em; color:#e74c3c;">&#128682;</span>
+        </a>
+    </div>
+    </body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var bars = document.querySelectorAll('.skill-bar-fill');
+            bars.forEach(function (bar) {
+                var targetWidth = bar.getAttribute('data-width');
+                if (targetWidth) {
+                    setTimeout(function () {
+                        bar.style.width = targetWidth;
+                    }, 300);
+                }
+            });
+            var chatMessages = document.querySelectorAll('.chat-message');
+            chatMessages.forEach(function (msg) {
+                if (!msg.querySelector('.chat-meta')) {
+                    var meta = document.createElement('div');
+                    meta.className = 'chat-meta';
+                    var now = new Date();
+                    var hour = now.getHours().toString().padStart(2, '0');
+                    var min = now.getMinutes().toString().padStart(2, '0');
+                    var time = hour + ':' + min;
+                    var tick = '\u2714\u2714';
+                    var tickColor = msg.classList.contains('chat-message-support') ? '#0074d9' : '#2ecc40';
+                    meta.innerHTML = '<span style="font-size:1.18em; color:' + tickColor + '; font-weight:bold; margin-right:4px;">' + tick + '</span>' +
+                        '<span class="chat-time">' + time + '</span>';
+                    meta.style.position = 'absolute';
+                    meta.style.bottom = '8px';
+                    meta.style.right = '14px';
+                    meta.style.display = 'flex';
+                    meta.style.alignItems = 'center';
+                    meta.style.zIndex = '2';
+                    msg.style.position = 'relative';
+                    msg.appendChild(meta);
+                }
+            });
+            // اسکرول خودکار به آخر پیام‌ها
+            var chatMessagesBox = document.getElementById('chatMessages');
+            if (chatMessagesBox) {
+                chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
+            }
+        });
+        var chatMessagesBox = document.getElementById('chatMessages');
+        var goBottomBtn = document.getElementById('goBottomBtn');
+        chatMessagesBox.addEventListener('scroll', function () {
+            var nearBottom = chatMessagesBox.scrollHeight - chatMessagesBox.scrollTop - chatMessagesBox.clientHeight < 60;
+            goBottomBtn.style.display = nearBottom ? 'none' : 'flex';
+        });
+        goBottomBtn.onclick = function () {
+            chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
+        };
+
+        function toggleMenu() {
+            var mobileMenu = document.getElementById('mobileMenu');
+            var menuIcon = document.querySelector('.navbar-menu-icon');
+            if (window.innerWidth <= 700) {
+                var isOpen = (mobileMenu.style.display === 'none' || mobileMenu.style.display === '') ? false : true;
+                if (!isOpen) {
+                    mobileMenu.style.display = 'flex';
+                    setTimeout(function () {
+                        var links = mobileMenu.querySelectorAll('a');
+                        links.forEach(function (link, i) {
+                            link.style.opacity = '0';
+                            link.style.transform = 'translateY(24px)';
+                            setTimeout(function () {
+                                link.style.opacity = '1';
+                                link.style.transform = 'translateY(0)';
+                            }, 80 + i * 60);
+                        });
+                    }, 10);
+                    menuIcon.classList.add('active');
+                } else {
+                    mobileMenu.style.display = 'none';
+                    menuIcon.classList.remove('active');
+                }
+            }
+        }
+
+        window.addEventListener('resize', function () {
+            var mobileMenu = document.getElementById('mobileMenu');
+            if (window.innerWidth > 700) {
+                mobileMenu.style.display = 'none';
+            }
+        });
+        document.getElementById('exitBtn').onclick = function (e) {
+            e.preventDefault();
+            window.location.href = 'https://www.google.com'; // یا هر آدرس خروجی دلخواه
+        };
+
+        function showSignup() {
+            document.getElementById('signup-page').style.display = 'block';
+            document.getElementById('login-page').style.display = 'none';
+        }
+
+        function showLogin() {
+            document.getElementById('signup-page').style.display = 'none';
+            document.getElementById('login-page').style.display = 'block';
+        }
+
+        // نمایش صفحه بر اساس آدرس هشتگ
+        window.addEventListener('hashchange', function () {
+            if (location.hash === '#signup') showSignup();
+            else if (location.hash === '#login') showLogin();
+            else {
+                document.getElementById('signup-page').style.display = 'none';
+                document.getElementById('login-page').style.display = 'none';
+            }
+        });
+        document.getElementById('mobileProfileBtn').onclick = function (e) {
+            e.stopPropagation();
+            var menu = document.getElementById('mobileProfileMenu');
+            menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'flex' : 'none';
+        };
+        document.addEventListener('click', function (e) {
+            var menu = document.getElementById('mobileProfileMenu');
+            if (menu) menu.style.display = 'none';
+        });
+        document.querySelectorAll('.chat-message-menu-btn').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                document.querySelectorAll('.chat-message-menu').forEach(function (menu) {
+                    menu.classList.remove('show');
+                });
+                var menu = btn.parentElement.querySelector('.chat-message-menu');
+                if (menu) menu.classList.toggle('show');
+            });
+        });
+        document.addEventListener('click', function () {
+            document.querySelectorAll('.chat-message-menu').forEach(function (menu) {
+                menu.classList.remove('show');
+            });
+        });
+
+        function deleteMessage(el) {
+            var msg = el.closest('.chat-message');
+            if (msg) msg.remove();
+        }
+
+        document.querySelectorAll('.chat-message').forEach(function (msg) {
+            let startX = 0;
+            let dragging = false;
+            msg.addEventListener('touchstart', function (e) {
+                startX = e.touches[0].clientX;
+                dragging = true;
+            });
+            msg.addEventListener('touchmove', function (e) {
+                if (!dragging) return;
+                let deltaX = e.touches[0].clientX - startX;
+                msg.style.transform = 'translateX(' + deltaX + 'px)';
+                if (Math.abs(deltaX) > 60) {
+                    msg.classList.add('dragging');
+                } else {
+                    msg.classList.remove('dragging');
+                }
+            });
+            msg.addEventListener('touchend', function (e) {
+                if (Math.abs(e.changedTouches[0].clientX - startX) > 60) {
+                    var replyBox = document.getElementById('replyPreview');
+                    var username = msg.querySelector('.chat-username');
+                    var meta = msg.querySelector('.chat-meta');
+                    var mainText = '';
+                    if (username && meta) {
+                        var all = msg.innerText;
+                        var start = all.indexOf(username.innerText) + username.innerText.length;
+                        var end = all.indexOf(meta.innerText);
+                        mainText = all.substring(start, end).trim();
+                    } else {
+                        mainText = msg.innerText.trim();
+                    }
+                    var shortText = mainText.length > 30 ? mainText.substring(0, 30) + '...' : mainText;
+                    replyBox.innerHTML = '<div class="reply-preview">' +
+                        '<button class="reply-close" onclick="document.getElementById(\'replyPreview\').style.display=\'none\';document.querySelector(\'input[name=reply]\').value=\'\';">&#10006;</button>' +
+                        '<span>ریپلای: ' + shortText + '</span></div>';
+                    replyBox.style.display = 'block';
+                    document.querySelector('input[name=reply]').value = shortText;
+                }
+                msg.style.transform = '';
+                msg.classList.remove('dragging');
+                dragging = false;
+            });
+        });
+    </script>
+
+{% endblock content %}
+</html>

@@ -1,0 +1,230 @@
+{% extends 'master.html' %}
+{% load static %}
+<!DOCTYPE html>
+{% block content %}
+
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ورود</title>
+  <link href="https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'assets/style.css' %}">
+  <style>
+      .contact-container {
+        max-width: 900px;
+        margin: 48px auto 48px auto;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 2px 16px rgba(80,201,195,0.13);
+        padding: 36px 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        align-items: flex-start;
+        opacity: 0;
+        animation: fadeIn 0.8s cubic-bezier(.5,1.8,.5,1) forwards;
+        animation-delay: 0.05s;
+      }
+      .contact-title {
+        font-size: 1.35rem;
+        font-weight: bold;
+        color: #232526;
+        margin-bottom: 10px;
+        text-align: right;
+        width: 100%;
+      }
+      .team-contact-row {
+        display: flex;
+        flex-direction: row;
+        gap: 28px;
+        width: 100%;
+        justify-content: flex-start;
+      }
+      .team-contact-card {
+        background: #f7f7f7;
+        border-radius: 14px;
+        box-shadow: 0 2px 10px rgba(80,201,195,0.09);
+        padding: 22px 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 220px;
+        min-width: 0;
+        max-width: 90vw;
+        opacity: 0;
+        animation: fadeIn 0.7s cubic-bezier(.5,1.8,.5,1) forwards;
+      }
+      .team-contact-card:nth-child(1) { animation-delay: 0.18s; }
+      .team-contact-card:nth-child(2) { animation-delay: 0.36s; }
+      .team-contact-img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 12px;
+        border: 2px solid #50c9c3;
+      }
+      .team-contact-name {
+        font-size: 1.08rem;
+        font-weight: bold;
+        color: #232526;
+        margin-bottom: 8px;
+        text-align: center;
+      }
+      .team-contact-role {
+        font-size: 0.98rem;
+        color: #50c9c3;
+        margin-bottom: 8px;
+        text-align: center;
+      }
+      .team-contact-info {
+        font-size: 0.97rem;
+        color: #444;
+        text-align: center;
+        margin-bottom: 8px;
+        direction: ltr;
+      }
+      .team-contact-social {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 4px;
+      }
+      .team-contact-social a {
+        text-decoration: none;
+        font-size: 1.3em;
+        transition: color 0.18s;
+      }
+      .team-contact-social a.instagram { color: #e1306c; }
+      .team-contact-social a.telegram { color: #0088cc; }
+      .team-contact-social a.email { color: #232526; font-size: 1.1em; }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(40px) scale(0.97); }
+        80% { opacity: 1; transform: translateY(-6px) scale(1.03); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      @media (max-width: 700px) {
+        .contact-container {
+          padding: 10px 2vw 16px 2vw;
+          margin: 14px 0 14px 0;
+          gap: 18px;
+        }
+        .contact-title {
+          font-size: 1.08rem;
+        }
+        .team-contact-row {
+          flex-direction: row;
+          gap: 12px;
+          align-items: stretch;
+          justify-content: center;
+        }
+        .team-contact-card {
+          width: 100%;
+          max-width: 100vw;
+          padding: 12px 6px;
+        }
+        .team-contact-img {
+          width: 54px;
+          height: 54px;
+          margin-bottom: 8px;
+        }
+        .team-contact-name {
+          font-size: 0.99rem;
+        }
+        .team-contact-role {
+          font-size: 0.93rem;
+        }
+        .team-contact-info {
+          font-size: 0.93rem;
+        }
+      }
+    </style>
+</head>
+<body>
+
+    <div class="main-bg">
+        <!-- Navbar (کپی کامل از index) -->
+        {% include '_partials/messages.html' %}
+        <div class="contact-container" style="display:flex;flex-direction:column;align-items:center;">
+          <div style="width:100%;text-align:center;margin-bottom:8px;">
+            <h2 style="font-size:1.25rem;color:#232526;font-weight:bold;margin-bottom:8px;">تماس با ما</h2>
+              {% for foo in contacting %}
+              	            <div style="font-size:1.05rem;color:#444;max-width:520px;margin:0 auto 0 auto;line-height:2;">{{foo.title }}</div>
+              {% endfor %}
+              
+
+          </div>
+          <div class="contact-title">تماس با اعضای تیم</div>
+          <div class="team-contact-row" style="justify-content:center;width:100%;">
+  {% for real in realtor %}
+  	  
+            <div class="team-contact-card">
+              <img src="{{ real.image.url }}" alt="علی محمدی" class="team-contact-img">
+              <div class="team-contact-name">{{ real.first_name }} {{ real.last_name }}</div>
+              <div class="team-contact-role">{{ real.title_0 }}</div>
+              <div class="team-contact-info">{{ real.email }}</div>
+              <div class="team-contact-social">
+                <a href="{{ real.email }}" class="email" title="ایمیل">&#9993;</a>
+                <a href="{{ real.instagram }}" class="instagram" title="اینستاگرام" target="_blank">&#128247;</a>
+                <a href="{{ real.telegram }}" class="telegram" title="تلگرام" target="_blank">&#128241;</a>
+              </div>
+            </div>
+  {% endfor %}
+
+
+          </div>
+        </div>
+        <!-- Footer (کپی کامل از index) -->
+
+    </div>
+    <script>
+    function toggleMenu() {
+      var mobileMenu = document.getElementById('mobileMenu');
+      var menuIcon = document.querySelector('.navbar-menu-icon');
+      if (window.innerWidth <= 700) {
+          var isOpen = (mobileMenu.style.display === 'none' || mobileMenu.style.display === '') ? false : true;
+          if (!isOpen) {
+              mobileMenu.style.display = 'flex';
+              setTimeout(function() {
+                  var links = mobileMenu.querySelectorAll('a');
+                  links.forEach(function(link, i) {
+                      link.style.opacity = '0';
+                      link.style.transform = 'translateY(24px)';
+                      setTimeout(function() {
+                          link.style.opacity = '1';
+                          link.style.transform = 'translateY(0)';
+                      }, 80 + i * 60);
+                  });
+              }, 10);
+              menuIcon.classList.add('active');
+          } else {
+              mobileMenu.style.display = 'none';
+              menuIcon.classList.remove('active');
+          }
+      }
+    }
+    window.addEventListener('resize', function() {
+      var mobileMenu = document.getElementById('mobileMenu');
+      if (window.innerWidth > 700) {
+          mobileMenu.style.display = 'none';
+      }
+    });
+    document.getElementById('exitBtn').onclick = function(e) {
+      e.preventDefault();
+      window.location.href = 'https://www.google.com';
+    };
+    document.getElementById('mobileProfileBtn').onclick = function(e) {
+      e.stopPropagation();
+      var menu = document.getElementById('mobileProfileMenu');
+      if(menu) menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'flex' : 'none';
+    };
+    document.addEventListener('click', function(e) {
+      var menu = document.getElementById('mobileProfileMenu');
+      if(menu) menu.style.display = 'none';
+    });
+    </script>
+</body>
+	
+{% endblock content%}
+</html>

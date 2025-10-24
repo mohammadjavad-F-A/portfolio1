@@ -1,0 +1,777 @@
+{% extends 'master.html' %}
+{% load humanize %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa">
+
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تایید پروژه</title>
+    <link href="https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'assets/style.css' %}">
+    <style>
+        .profile-page { min-height: 70vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        @keyframes profileBoxFadeIn {
+          from { opacity: 0; transform: translateY(40px) scale(0.97); }
+          80% { opacity: 1; transform: translateY(-8px) scale(1.03); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .profile-box {
+          background: #fff;
+          border-radius: 18px;
+          box-shadow: 0 4px 24px rgba(80,201,195,0.13);
+          padding: 32px 24px;
+          max-width: 440px;
+          width: 100%;
+          margin: 48px auto;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          box-sizing: border-box;
+          animation: profileBoxFadeIn 0.9s cubic-bezier(.5,1.8,.5,1);
+        }
+        @media (max-width: 700px) {
+            .profile-box {
+                max-width: 98vw;
+                width: 96vw;
+                padding: 12vw 4vw 8vw 4vw;
+                border-radius: 12px;
+                margin: 24px auto;
+                box-sizing: border-box;
+            }
+        }
+        .chat-page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 70vh;
+  margin: 0;
+  padding: 0;
+}
+.chat-container {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(80,201,195,0.13);
+  width: 100%;
+  max-width: 900px;
+  min-height: 540px;
+  margin: 48px auto 32px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  font-family: 'Vazir', sans-serif;
+}
+.chat-header {
+  padding: 18px 24px 12px 24px;
+  font-size: 1.18rem;
+  font-weight: bold;
+  color: #232526;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: center;
+}
+@keyframes chatFadeIn {
+  0% { opacity: 0; transform: translateY(30px) scale(0.97); }
+  80% { opacity: 1; transform: translateY(-6px) scale(1.03); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.chat-messages {
+  flex: 1;
+  padding: 18px 24px;
+  overflow-y: auto;
+  background: #f7f7f7;
+  border-radius: 0 0 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 520px;
+  animation: chatFadeIn 0.8s cubic-bezier(.5,1.8,.5,1);
+}
+.chat-message {
+  max-width: 70%;
+  padding: 10px 16px;
+  border-radius: 14px;
+  font-size: 1.01rem;
+  line-height: 1.7;
+  word-break: break-word;
+  box-shadow: 0 2px 8px rgba(80,201,195,0.09);
+  animation: chatFadeIn 0.7s cubic-bezier(.5,1.8,.5,1);
+  position: relative;
+}
+.chat-message.dragging {
+  transition: transform 0.2s, background 0.2s;
+  background: #fdeaea !important;
+  box-shadow: 0 4px 24px rgba(231,76,60,0.13);
+  opacity: 0.85;
+}
+.chat-message-menu-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5em;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+.chat-message-menu {
+  position: absolute;
+  top: 36px;
+  left: 8px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(80,201,195,0.13);
+  padding: 8px 0;
+  min-width: 120px;
+  font-size: 0.97em;
+  color: #232526;
+  display: none;
+  flex-direction: column;
+  z-index: 10;
+}
+.chat-message-menu.show {
+  display: flex;
+}
+a.chat-message-menu-item {
+  color: #e74c3c !important;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+a.chat-message-menu-item::before {
+  content: '\1F5D1'; /* آیکون سطل زباله */
+  font-size: 1.1em;
+  margin-left: 2px;
+}
+a.chat-message-menu-item:hover {
+  background: #fdeaea !important;
+  color: #c0392b !important;
+}
+div.chat-message-menu-item {
+  color: #232526 !important;
+  font-weight: normal;
+  background: none !important;
+  text-decoration: none;
+  display: block;
+  transition: none;
+}
+div.chat-message-menu-item:hover {
+  background: #f7f7f7 !important;
+  color: #232526 !important;
+}
+.chat-message-user {
+  background: linear-gradient(90deg,#50c9c3 0%,#43e97b 100%);
+  color: #fff;
+  align-self: flex-end;
+  position: relative;
+  padding-bottom: 10px;
+}
+.chat-message-support {
+  background: linear-gradient(90deg,#50c9c3 0%,#2196f3 100%);
+  color: #fff;
+  align-self: flex-start;
+  border: none;
+  position: relative;
+  padding-bottom: 10px;
+}
+.chat-time {
+  display: inline-block;
+  margin-right: 6px;
+  font-size: 0.93em;
+  color: #272626;
+  vertical-align: middle;
+  font-family: 'Vazir', sans-serif;
+}
+.chat-message-user.two-tick::after {
+  content: '\2714\2714';
+}
+.chat-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 0.97em;
+  width: 100%;
+  direction: rtl;
+}
+.chat-input-box {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+  border-top: 1px solid #e0e0e0;
+  background: #fff;
+  border-radius: 0 0 18px 18px;
+  gap: 10px;
+}
+.chat-input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  font-size: 1rem;
+  font-family: 'Vazir', sans-serif;
+  background: #fafafa;
+  box-sizing: border-box;
+}
+.chat-input::placeholder {
+  font-family: 'Vazir', sans-serif;
+  color: #888;
+  text-align: right;
+}
+.chat-send-btn {
+  width: 44px;
+  height: 44px;
+  background: #232526;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.45em;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(80,201,195,0.13);
+  transition: background 0.18s;
+  padding: 0;
+}
+.chat-send-btn:hover {
+  background: #50c9c3;
+}
+.chat-send-btn::before {
+  content: '\2191';
+  font-size: 1.45em;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -2px;
+}
+.chat-message-fa {
+  direction: rtl;
+  text-align: right;
+}
+.chat-message-en {
+  direction: ltr;
+  text-align: left;
+}
+.chat-date-separator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 18px 0 8px 0;
+}
+.chat-date-label {
+  background: #f0f0f0;
+  color: #888;
+  font-size: 0.97rem;
+  font-family: 'Vazir', sans-serif;
+  padding: 6px 18px;
+  border-radius: 16px;
+  box-shadow: 0 1px 6px rgba(80,201,195,0.09);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+.chat-username {
+  font-size: 0.98em;
+  font-weight: bold;
+  color: #ffffff !important;
+  margin-bottom: 2px;
+  text-align: right;
+}
+@media (max-width: 900px) {
+  .chat-container {
+    max-width: 99vw;
+    min-height: 420px;
+    margin: 18px auto 18px auto;
+    border-radius: 12px;
+  }
+  .chat-header,
+  .chat-messages,
+  .chat-input-box {
+    padding: 12px 8px;
+    border-radius: 0 0 12px 12px;
+  }
+  .chat-message {
+    font-size: 0.98rem;
+    border-radius: 10px;
+    padding: 8px 10px;
+  }
+  .chat-message-fa {
+    direction: rtl;
+    text-align: right;
+  }
+  .chat-message-en {
+    direction: ltr;
+    text-align: left;
+  }
+}
+.go-bottom-btn {
+  position: absolute;
+  left: 32px;
+  bottom: 90px;
+  width: 44px;
+  height: 44px;
+  background: #06524e;
+  color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(80,201,195,0.13);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.7em;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.18s;
+  border: none;
+}
+.go-bottom-btn:hover {
+  background: #2196f3;
+}
+.chat-container { position: relative; }
+.reply-preview {
+  width: 100%;
+  max-width: none;
+  margin: 0 0 8px 0;
+  background: #f7f7f7;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(80,201,195,0.09);
+  padding: 10px 14px;
+  font-size: 0.98rem;
+  color: #232526;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  direction: rtl;
+  box-sizing: border-box;
+}
+@media (max-width: 700px) {
+  .reply-preview {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 0 8px 0;
+    padding: 8px 8px;
+    font-size: 0.97rem;
+  }
+}
+.project-box {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  margin-bottom: 12px;
+  color: #232526;
+  font-size: 0.98rem;
+  width: 100%;
+  box-sizing: border-box;
+  direction: rtl; /* راست‌چین کردن محتوا */
+  text-align: right; /* متن به راست بچسبد */
+}
+.project-box .proj-title { font-weight: 700; margin-bottom: 6px; }
+.project-box .proj-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px; }
+.project-box .proj-date { color:#7a7a7a; font-size:0.92rem; /* اندازه و رنگ تاریخ */ }
+.project-box .proj-desc-row { display: flex; align-items: flex-start; gap: 8px; }
+.project-box .proj-desc { color: #555; margin-bottom: 10px; line-height: 1.5; flex: 1; max-height: 60px; overflow: hidden; transition: max-height 0.28s ease; }
+.project-box .proj-desc.expanded { max-height: 1000px; }
+.project-box .proj-meta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: flex-end; }
+.project-box .meta-item { background: #f5f6f7; padding: 6px 10px; border-radius: 8px; font-size: 0.95rem; color: #333; }
+.project-box .proj-toggle { display:inline-flex; width:36px; height:36px; align-items:center; justify-content:center; background:#ffffff; border:1px solid #e6f0ef; border-radius:8px; box-shadow:0 4px 12px rgba(8,30,27,0.06); cursor:pointer; font-size:0.9rem; color:#50c9c3; padding:6px; transition: transform .25s ease, background .18s ease, color .18s ease, box-shadow .18s ease; }
+.project-box .proj-toggle:hover { background:#f6fffd; color:#2aa79f; box-shadow:0 6px 16px rgba(8,30,27,0.08); }
+.project-box .proj-toggle svg { width:14px; height:14px; stroke:currentColor; fill:none; transition: transform .25s ease, stroke .18s ease; }
+.project-box .proj-toggle.expanded { transform: rotate(180deg); background:#50c9c3; color:#ffffff; }
+.project-box .proj-toggle.expanded svg { stroke:#ffffff; }
+    </style>
+</head>
+<body>
+{% include '_partials/messages.html' %}
+    <div class="main-bg">
+
+        <div class="mobile-navbar-menu" id="mobileMenu" style="display:none; margin-top:5px">
+            <div class="mobile-profile-container" style="width:100%; display:flex; justify-content:center; margin:18px 0; position:relative;">
+                <img id="mobileProfileBtn" src="assets/img/img_avatar.png" alt="پروفایل" style="width:38px; height:38px; border-radius:50%; border:2px solid #50c9c3; cursor:pointer;">
+            </div>
+            <div class="mobile-profile-username" style="width:100%; text-align:center; font-size:1.05rem; color:#232526; font-weight:bold; margin-bottom:10px;">نام کاربر</div>
+            <a href="signup.html">ثبت‌نام</a>
+            <a href="login.html">ورود</a>
+            <a href="user-profile.html">مشاهده پروفایل</a>
+            <a href="#create-project">ایجاد پروژه</a>
+            <a href="#home">خانه</a>
+            <a href="#about">درباره من</a>
+            <a href="#projects">پروژه‌ها</a>
+            <a href="#contact">تماس</a>
+            <a href="#" id="exitBtn" style="margin:220px 0 0 0; color:#e74c3c; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.05rem; background:#fff; box-shadow:0 2px 12px rgba(80,201,195,0.13);">
+                <span style="font-size:1.3em;">&#128682;</span>
+                خروج
+            </a>
+        </div>
+        <!-- محتوای تایید پروژه اینجا قرار می‌گیرد -->
+        <div class="chat-page">
+          <div class="chat-container">
+            <div class="chat-header">نام پروژه:{{ creative.project_name }}</div>
+            <div class="chat-messages" id="chatMessages">
+            <div class="project-box" role="article" aria-label="توضیحات پروژه">
+                <div class="proj-header">
+                  <div class="proj-title">پروژه: {{ creative.project_name }}</div>
+                  <div class="proj-date" data-created="{{ creative.date2 }}"> </div>
+                </div>
+                <div class="proj-desc-row">
+                  <div class="proj-desc">خلاصه: {{ creative.description }}</div>
+                  <button class="proj-toggle" aria-expanded="false" aria-label="نمایش کامل توضیحات">
+                    <!-- SVG arrow down -->
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </div>
+                <div class="proj-meta">
+                  <div class="meta-item">زبان: {{ creative.langu }}</div>
+                  <div class="meta-item">قیمت پیشنهادی: {{ creative.price | intcomma }} تومان</div>
+                  <div class="meta-item">مدت: {{ creative.day }} روز</div>
+                </div>
+              </div>
+                <div class="chat-date-separator"><span class="chat-date-label">{{ creative.created_date }}</span></div>
+                <div class="chat-message chat-message-user chat-message-fa">
+                    <button class="chat-message-menu-btn" title="بیشتر">&#8942;</button>
+                    <div class="chat-username">{{ creative.user.username }}</div>
+                
+                    {{ creative.project_description }}<br>
+
+                    <div class="chat-meta">
+                      <span style="font-size:1.18em; color:#888; font-weight:bold;">&#10004;&#10004;</span>
+                      <span class="chat-time">{{ creative.created_date2|date:"H:i" }}&nbsp;&nbsp;&nbsp;&nbsp;{{ creative.created_date }}</span>
+                    </div>
+                    <div class="chat-message-menu">
+                      
+                      <div class="chat-message-menu-item">تاریخ خوانده شده: {{ creative.date2 }}</div>
+                    </div>
+                </div>
+  
+                {% for ms in massage %}
+                    {% if ms.user.is_staff %}
+                    	 <div class="chat-message chat-message-support chat-message-fa">
+                    <button class="chat-message-menu-btn" title="بیشتر">&#8942;</button>
+                    <div class="chat-username">{{ ms.user.username }}</div>
+                    
+                         {% if ms.reply %}
+                            <div class="reply-preview" style="margin-bottom:6px;">
+                      <span style="color:#888;">{{ ms.reply }}</span>
+                    
+                            </div>
+                            {% else %}
+                            {% endif %}
+                    {{ ms.description }}
+                    <div class="chat-meta">
+                      <span style="font-size:1.18em; color:#0074d9; font-weight:bold;">
+                {% if ms.user == request.user %}
+                              {% if ms.is_read %}
+                                  &#10004;&#10004;
+                              {% else %}
+                                  &#10004;
+                              {% endif %}
+                          {% endif %}
+                          
+                      </span>
+                      <span class="chat-time">{{ ms.date_2|date:"H:i" }}&nbsp;&nbsp;&nbsp;&nbsp;{{ ms.date_1 }}</span>
+                    </div>
+                                   {% if ms.user == request.user %}
+                    <div class="chat-message-menu">
+           
+                      <a href="{% url 'deleted_message' ms.id creative.id %}" class="chat-message-menu-item">حذف پیام</a>
+                        {% if ms.is_read %}
+                        	<div class="chat-message-menu-item">تاریخ خوانده شده: {{ ms.read_date1|date:"H:i" }}  {{ ms.read_date2 }}</div>
+                            {% else %}
+                            <div class="chat-message-menu-item">تاریخ خوانده شده: خوانده نشده </div>
+                        {% endif %} 
+                        
+                      
+                    </div>
+                        {% endif %}
+                </div>
+                    {% else %}
+                        <div class="chat-message chat-message-user chat-message-fa">
+                    <button class="chat-message-menu-btn" title="بیشتر">&#8942;</button>
+                    <div class="chat-username">{{ ms.user.username }}</div>
+                        {% if ms.reply %}
+                            <div class="reply-preview" style="margin-bottom:6px;">
+                      <span style="color:#888;">{{ ms.reply }}</span>
+                    
+                            </div>
+                            {% else %}
+                            {% endif %}
+                    {{ ms.description }}
+                    <div class="chat-meta">
+                      <span style="font-size:1.18em; color:#2ecc40; font-weight:bold;">{% if ms.user == request.user %}
+                              {% if ms.is_read %}
+                                  &#10004;&#10004;
+                              {% else %}
+                                  &#10004;
+                              {% endif %}
+                          {% endif %}</span>
+                      <span class="chat-time">{{ ms.date_2|date:"H:i" }}&nbsp;&nbsp;&nbsp;&nbsp;{{ ms.date_1 }}</span>
+                    </div>
+                                 {% if ms.user == request.user %}
+                    <div class="chat-message-menu">
+           
+                      <a href="{% url 'deleted_message' ms.id creative.id %}" class="chat-message-menu-item">حذف پیام</a>
+                        {% if ms.is_read %}
+                        	<div class="chat-message-menu-item">تاریخ خوانده شده: {{ ms.read_date1|date:"H:i" }}  {{ ms.read_date2 }}</div>
+                            {% else %}
+                            <div class="chat-message-menu-item">تاریخ خوانده شده: خوانده نشده </div>
+                        {% endif %} 
+                        
+                      
+                    </div>
+                        {% endif %}
+                </div>
+                    {% endif %} 
+                    
+                	
+                {% endfor %}
+                
+               
+                
+                
+                
+            </div>
+            <div id="replyPreview" style="display:none;"></div>
+            <form class="chat-input-box" action="{% url 'confirm_project' creative.id %}" method="post">
+                {% csrf_token %}
+                                    <input type="number" value="{{ creative.id }}" name="confirm_pro" hidden="hidden">
+
+                    <input type="text" value="{{ creative.description }}" name="description_2" hidden="hidden">
+              <input type="text" name="reply" value="" hidden="hidden">  
+              <input type="text" id="chatInput" class="chat-input" placeholder="پیام خود را بنویسید..." name="description">
+                    <button type="submit" class="chat-send-btn" aria-label="ارسال پیام"></button>
+            </form>
+            <button class="go-bottom-btn" id="goBottomBtn" title="برو به آخرین پیام">&#8595;</button>
+          </div>
+        </div>
+
+    </div>
+</body>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var bars = document.querySelectorAll('.skill-bar-fill');
+  bars.forEach(function(bar) {
+    var targetWidth = bar.getAttribute('data-width');
+    if (targetWidth) {
+      setTimeout(function() {
+        bar.style.width = targetWidth;
+      }, 300);
+    }
+  });
+  var chatMessages = document.querySelectorAll('.chat-message');
+  chatMessages.forEach(function(msg) {
+    if (!msg.querySelector('.chat-meta')) {
+      var meta = document.createElement('div');
+      meta.className = 'chat-meta';
+      var now = new Date();
+      var hour = now.getHours().toString().padStart(2, '0');
+      var min = now.getMinutes().toString().padStart(2, '0');
+      var time = hour + ':' + min;
+      var tick = '\u2714\u2714';
+      var tickColor = msg.classList.contains('chat-message-support') ? '#0074d9' : '#2ecc40';
+      meta.innerHTML = '<span style="font-size:1.18em; color:' + tickColor + '; font-weight:bold; margin-right:4px;">' + tick + '</span>' +
+        '<span class="chat-time">' + time + '</span>';
+      meta.style.position = 'absolute';
+      meta.style.bottom = '8px';
+      meta.style.right = '14px';
+      meta.style.display = 'flex';
+      meta.style.alignItems = 'center';
+      meta.style.zIndex = '2';
+      msg.style.position = 'relative';
+      msg.appendChild(meta);
+    }
+  });
+  // اسکرول خودکار به آخر پیام‌ها
+  var chatMessagesBox = document.getElementById('chatMessages');
+  if(chatMessagesBox) {
+    chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
+  }
+
+  // جدید: کنترل دکمه باز/بسته کردن توضیحات پروژه
+  document.querySelectorAll('.project-box').forEach(function(box) {
+    var desc = box.querySelector('.proj-desc');
+    var toggle = box.querySelector('.proj-toggle');
+    if (!desc || !toggle) return;
+    // اگر متن کوتاه است، دکمه را مخفی کن
+    if (desc.scrollHeight <= 60) {
+      toggle.style.display = 'none';
+    } else {
+      toggle.style.display = 'inline-flex';
+    }
+    toggle.addEventListener('click', function() {
+      var expanded = desc.classList.toggle('expanded');
+      if (expanded) {
+        // باز کردن کامل
+        desc.style.maxHeight = desc.scrollHeight + 'px';
+        toggle.classList.add('expanded');
+        toggle.setAttribute('aria-expanded', 'true');
+      } else {
+        // بستن و بازگرداندن به حالت خلاصه
+        desc.style.maxHeight = '60px';
+        toggle.classList.remove('expanded');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
+
+  // جدید: فرمت تاریخ ایجاد پروژه به فارسی
+  document.querySelectorAll('.proj-date').forEach(function(el){
+    var d = el.getAttribute('data-created');
+    var dateObj = d ? new Date(d) : new Date();
+    try {
+      var fmt = dateObj.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
+      el.textContent = 'ایجاد شده: ' + fmt;
+    } catch (err) {
+      // fallback
+      el.textContent = 'ایجاد شده: ' + dateObj.toISOString().split('T')[0];
+    }
+  });
+
+});
+var chatMessagesBox = document.getElementById('chatMessages');
+var goBottomBtn = document.getElementById('goBottomBtn');
+chatMessagesBox.addEventListener('scroll', function() {
+  var nearBottom = chatMessagesBox.scrollHeight - chatMessagesBox.scrollTop - chatMessagesBox.clientHeight < 60;
+  goBottomBtn.style.display = nearBottom ? 'none' : 'flex';
+});
+goBottomBtn.onclick = function() {
+  chatMessagesBox.scrollTop = chatMessagesBox.scrollHeight;
+};
+function toggleMenu() {
+    var mobileMenu = document.getElementById('mobileMenu');
+    var menuIcon = document.querySelector('.navbar-menu-icon');
+    if (window.innerWidth <= 700) {
+        var isOpen = (mobileMenu.style.display === 'none' || mobileMenu.style.display === '') ? false : true;
+        if (!isOpen) {
+            mobileMenu.style.display = 'flex';
+            setTimeout(function() {
+                var links = mobileMenu.querySelectorAll('a');
+                links.forEach(function(link, i) {
+                    link.style.opacity = '0';
+                    link.style.transform = 'translateY(24px)';
+                    setTimeout(function() {
+                        link.style.opacity = '1';
+                        link.style.transform = 'translateY(0)';
+                    }, 80 + i * 60);
+                });
+            }, 10);
+            menuIcon.classList.add('active');
+        } else {
+            mobileMenu.style.display = 'none';
+            menuIcon.classList.remove('active');
+        }
+    }
+}
+window.addEventListener('resize', function() {
+    var mobileMenu = document.getElementById('mobileMenu');
+    if (window.innerWidth > 700) {
+        mobileMenu.style.display = 'none';
+    }
+});
+document.getElementById('exitBtn').onclick = function(e) {
+    e.preventDefault();
+    window.location.href = 'https://www.google.com'; // یا هر آدرس خروجی دلخواه
+};
+function showSignup() {
+  document.getElementById('signup-page').style.display = 'block';
+  document.getElementById('login-page').style.display = 'none';
+}
+function showLogin() {
+  document.getElementById('signup-page').style.display = 'none';
+  document.getElementById('login-page').style.display = 'block';
+}
+// نمایش صفحه بر اساس آدرس هشتگ
+window.addEventListener('hashchange', function() {
+  if (location.hash === '#signup') showSignup();
+  else if (location.hash === '#login') showLogin();
+  else {
+    document.getElementById('signup-page').style.display = 'none';
+    document.getElementById('login-page').style.display = 'none';
+  }
+});
+document.getElementById('mobileProfileBtn').onclick = function(e) {
+    e.stopPropagation();
+    var menu = document.getElementById('mobileProfileMenu');
+    menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'flex' : 'none';
+};
+document.addEventListener('click', function(e) {
+    var menu = document.getElementById('mobileProfileMenu');
+    if(menu) menu.style.display = 'none';
+});
+document.querySelectorAll('.chat-message-menu-btn').forEach(function(btn) {
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.querySelectorAll('.chat-message-menu').forEach(function(menu) {
+      menu.classList.remove('show');
+    });
+    var menu = btn.parentElement.querySelector('.chat-message-menu');
+    if(menu) menu.classList.toggle('show');
+  });
+});
+document.addEventListener('click', function() {
+  document.querySelectorAll('.chat-message-menu').forEach(function(menu) {
+    menu.classList.remove('show');
+  });
+});
+function deleteMessage(el) {
+  var msg = el.closest('.chat-message');
+  if(msg) msg.remove();
+}
+document.querySelectorAll('.chat-message').forEach(function(msg) {
+  let startX = 0;
+  let dragging = false;
+  msg.addEventListener('touchstart', function(e) {
+    startX = e.touches[0].clientX;
+    dragging = true;
+  });
+  msg.addEventListener('touchmove', function(e) {
+    if (!dragging) return;
+    let deltaX = e.touches[0].clientX - startX;
+    msg.style.transform = 'translateX(' + deltaX + 'px)';
+    if (Math.abs(deltaX) > 60) {
+      msg.classList.add('dragging');
+    } else {
+      msg.classList.remove('dragging');
+    }
+  });
+  msg.addEventListener('touchend', function(e) {
+  if (Math.abs(e.changedTouches[0].clientX - startX) > 60) {
+    var replyBox = document.getElementById('replyPreview');
+    // آماده‌سازی کلون پیام و حذف عناصر غیرمورد برای استخراج تنها متن اصلی
+    var clone = msg.cloneNode(true);
+    var rp = clone.querySelector('.reply-preview'); if (rp) rp.remove();
+    var uname = clone.querySelector('.chat-username'); if (uname) uname.remove();
+    var m = clone.querySelector('.chat-meta'); if (m) m.remove();
+    var menu = clone.querySelector('.chat-message-menu'); if (menu) menu.remove();
+    var menuBtn = clone.querySelector('.chat-message-menu-btn'); if (menuBtn) menuBtn.remove();
+    // همچنین هر لینک یا دکمه دیگر را حذف کنیم (برای اطمینان)
+    clone.querySelectorAll('a, button').forEach(function(el){ if (el) el.remove(); });
+    var mainText = clone.innerText.trim().replace(/\s+/g, ' ');
+    var shortText = mainText.length > 30 ? mainText.substring(0, 30) + '...' : mainText;
+    replyBox.innerHTML = '<div class="reply-preview">' +
+      '<button class="reply-close" onclick="document.getElementById(\'replyPreview\').style.display=\'none\';document.querySelector(\'input[name=reply]\').value=\'\';">&#10006;</button>' +
+      '<span>ریپلای: ' + shortText + '</span></div>';
+    replyBox.style.display = 'block';
+    document.querySelector('input[name=reply]').value = shortText;
+  }
+  msg.style.transform = '';
+  msg.classList.remove('dragging');
+  dragging = false;
+  });
+});
+</script>
+	
+{% endblock %}
+</html>

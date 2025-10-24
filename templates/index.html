@@ -1,0 +1,333 @@
+{% extends 'master.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+{% block content %}
+
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link href="https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.css" rel="stylesheet">
+
+        <link rel="stylesheet" href="{% static 'assets/style.css' %}">
+
+        <style>
+            @media (max-width: 700px) {
+  /* Ensure why-site-box expands and its content wraps on small screens */
+  .why-site-box {
+    height: auto !important;
+    max-height: none !important;
+    overflow: auto !important; /* allow internal scroll if extremely long */
+    -webkit-overflow-scrolling: touch !important; /* smooth scrolling on iOS */
+    padding: 18px 14px !important;
+    box-sizing: border-box !important;
+  }
+  .why-site-desc, .why-site-desc p {
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    line-height: 1.6 !important;
+  }
+}
+            .why-site-box {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(80,201,195,0.13);
+  padding: 32px 24px;
+  min-width: 50%;
+  max-width: 100%;
+  margin-right: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 320px;
+}
+            .red-banner {
+                width: 100%;
+                max-width: 1100px;
+                background: #20c997;
+                color: #0c7559;
+                font-size: 1.08rem;
+                font-weight: bold;
+                text-align: center;
+                padding: 14px 0;
+                margin: 0 auto 18px auto;
+                border-radius: 0 0 16px 16px;
+                box-shadow: 0 2px 8px rgba(231, 76, 60, 0.13);
+                letter-spacing: 0.01em;
+            }
+
+            @media (max-width: 700px) {
+                .red-banner {
+                    width: 100vw !important;
+                    max-width: 100vw !important;
+                    font-size: 0.98rem;
+                    padding: 10px 0;
+                    border-radius: 0 0 10px 10px;
+                    margin-bottom: 10px;
+                }
+            }
+
+            .red-banner2 {
+                width: 100%;
+                max-width: 1100px;
+                background: #df5840;
+                color: #7c1e1e;
+                font-size: 1.08rem;
+                font-weight: bold;
+                text-align: center;
+                padding: 14px 0;
+                margin: 0 auto 18px auto;
+                border-radius: 0 0 16px 16px;
+                box-shadow: 0 2px 8px rgba(231, 76, 60, 0.13);
+                letter-spacing: 0.01em;
+            }
+
+            @media (max-width: 700px) {
+                .red-banner2 {
+                    width: 100vw !important;
+                    max-width: 100vw !important;
+                    font-size: 0.98rem;
+                    padding: 10px 0;
+                    border-radius: 0 0 10px 10px;
+                    margin-bottom: 10px;
+                }
+            }
+        </style>
+
+    </head>
+    <body>
+    {% include '_partials/messages.html' %}
+    <div class="main-bg">
+
+        <div class="content-row">
+            <div class="image-box">
+                {% for foo in basic %}
+                    <img src="{{ foo.image_main.url }}" alt="عکس" class="main-image">
+                {% endfor %}
+
+
+            </div>
+            <div class="text-box">
+                <h2>عنوان یا معرفی</h2>
+                {% for foo in basic %}
+                    {{ foo.description_1 }}
+                {% endfor %}
+
+
+            </div>
+        </div>
+
+        <!-- باکس مهارت‌ها فقط برای دسکتاپ -->
+        <div class="skills-row">
+            <div class="skills-box">
+                <div class="skills-title">مهارت‌های فرانت‌اند</div>
+                {% for foo in front %}
+                    <div class="skill-item"><span class="skill-label">{{ foo.title }}</span>
+                        <div class="skill-bar">
+                            <div class="skill-bar-fill" data-width="{{ foo.darsad }}%"></div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+
+            </div>
+            <div class="skills-box">
+                <div class="skills-title">مهارت‌های بک‌اند</div>
+                {% for foo in back %}
+                    <div class="skill-item"><span class="skill-label">{{ foo.title }}</span>
+                        <div class="skill-bar">
+                            <div class="skill-bar-fill" data-width="{{ foo.darsad }}%"></div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+
+            </div>
+            <div class="skills-box why-site-box">
+                <div class="skills-title">چرا سایت‌سازی مهم است؟</div>
+                <div class="why-site-desc">
+                    <p>{% for foo in basic %}
+                        {{ foo.description_2 }}
+                    {% endfor %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- باکس‌های مربعی معرفی سایت‌ها زیر باکس چرا سایت‌سازی مهم است -->
+        <div style="width:100%;text-align:center;margin-top:18px;">
+            <h3 style="font-size:1.18rem;color:#232526;font-weight:bold;margin:0 0 10px 0;">نمونه کار</h3>
+        </div>
+        <div class="site-cards-row"
+             style="display:flex;flex-wrap:wrap;gap:24px;justify-content:center; margin:36px 0 0 0; animation: siteCardFadeIn 1s cubic-bezier(.5,1.8,.5,1); transform: translateX(-20px);">
+            {% for project in projects %}
+                <div class="site-card"
+                     style="background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(80,201,195,0.13);padding:22px 18px;display:flex;flex-direction:column;align-items:center;width:210px;max-width:90vw;">
+                    <img src="{{ project.image_main.url }}" alt="سایت ۱"
+                         style="width:120px;height:72px;border-radius:10px;object-fit:cover;margin-bottom:12px;">
+                    <div style="font-size:1.08rem;font-weight:bold;color:#232526;margin-bottom:10px;text-align:center;">{{ project.title_main_1 }}</div>
+                    <div style="font-size:0.97rem;color:#444;text-align:center;margin-bottom:14px;">{{ project.title_main_2 }}</div>
+                    <div style="font-size:0.93rem;color:#888;text-align:center;margin-bottom:10px;">
+                        سازنده: {{ project.created_by }}</div>
+                    <div style="display:flex;gap:8px;width:100%;justify-content:center;">
+                        <a href="{{ project.link_to }}" class="profile-preview-btn"
+                           style="background:#50c9c3;color:#fff;padding:7px 14px;border-radius:8px;font-size:0.95rem;text-decoration:none;transition:background 0.2s;">دیدن
+                            سایت</a>
+                        <a href="{% url 'details_project' project.id %}" class="profile-preview-btn"
+                           style="background:#232526;color:#fff;padding:7px 14px;border-radius:8px;font-size:0.95rem;text-decoration:none;transition:background 0.2s;">جزئیات
+                            سایت</a>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div> <!-- پایان .site-cards-row -->
+        <!-- دکمه دیدن نمونه کار بیشتر دقیقا زیر باکس‌های مربعی و وسط -->
+        <div style="display:flex;justify-content:center;width:100%;margin:24px 0 0 0;">
+            <a href="{% url 'all_projects' %}"
+               style="font-size:1.08rem;font-weight:bold;color:#50c9c3;text-decoration:none;padding:10px 28px;border-radius:8px;transition:background 0.18s; background:#f7f7f7;box-shadow:0 2px 12px rgba(80,201,195,0.07);">دیدن
+                نمونه کار بیشتر</a>
+        </div>
+        <!-- paginator زیر باکس‌های سایت و هم‌راستا با باکس‌ها -->
+
+        <style>
+            @keyframes siteCardFadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateX(60px) scale(0.97);
+                }
+                80% {
+                    opacity: 1;
+                    transform: translateX(-8px) scale(1.03);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0) scale(1);
+                }
+            }
+
+            .site-card {
+                transition: transform 0.25s cubic-bezier(.5, 1.8, .5, 1), box-shadow 0.2s;
+                opacity: 0;
+                animation: siteCardFadeIn 0.8s cubic-bezier(.5, 1.8, .5, 1) forwards;
+            }
+
+            .site-card:nth-child(1) {
+                animation-delay: 0.05s;
+            }
+
+            .site-card:nth-child(2) {
+                animation-delay: 0.18s;
+            }
+
+            .site-card:nth-child(3) {
+                animation-delay: 0.31s;
+            }
+
+            .site-card:nth-child(4) {
+                animation-delay: 0.44s;
+            }
+
+            .site-card:nth-child(5) {
+                animation-delay: 0.57s;
+            }
+
+            .site-card:nth-child(6) {
+                animation-delay: 0.7s;
+            }
+
+            .site-card:nth-child(7) {
+                animation-delay: 0.83s;
+            }
+
+            .site-card:nth-child(8) {
+                animation-delay: 0.96s;
+            }
+        </style>
+        <!-- باکس درباره من پایین سمت چپ دسکتاپ -->
+        <!-- دکمه خروج دسکتاپ -->
+        <a id="fixed-exit-btn" href="user-profile.html"
+           style="position:fixed; bottom:32px; right:32px; width:54px; height:54px; background:#fff; border-radius:50%; box-shadow:0 2px 12px rgba(80,201,195,0.13); display:flex; align-items:center; justify-content:center; z-index:9999; cursor:pointer; transition:box-shadow 0.2s; text-decoration:none;">
+            <span style="font-size:2em; color:#e74c3c;">&#128682;</span>
+        </a>
+    </div>
+    <!-- ====== Footer ====== -->
+    <!-- باکس عکس و توضیح قبل از جدول تیم ما -->
+    <div class="animated-sample-box"
+         style="display: flex; flex-direction: row; justify-content: center; align-items: stretch; max-width: 1100px; margin: 80px auto 64px auto; gap: 36px;">
+        <div id="sample-images-box"
+             style="background:#fff; border-radius:18px; box-shadow:0 4px 24px rgba(80,201,195,0.13); padding:32px 18px; width:370px; min-height:340px; display:flex; flex-direction:column; align-items:center; justify-content:center; margin-left:0; order:1; flex-shrink:0;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px; width:100%;">
+                {% for foo in basic %}
+                    <img src="{{ foo.image_1.url }}" alt="نمونه 1" class="animated-img"
+                         style="width:100%; height:90px; border-radius:10px; object-fit:cover; aspect-ratio:3/1;">
+                    <img src="{{ foo.image_2.url }}" alt="نمونه 2" class="animated-img"
+                         style="width:100%; height:90px; border-radius:10px; object-fit:cover; aspect-ratio:3/1;">
+                    <img src="{{ foo.image_3.url }}" alt="نمونه 3" class="animated-img"
+                         style="width:100%; height:90px; border-radius:10px; object-fit:cover; aspect-ratio:3/1;">
+                    <img src="{{ foo.image_4.url }}" alt="نمونه 4" class="animated-img"
+                         style="width:100%; height:90px; border-radius:10px; object-fit:cover; aspect-ratio:3/1;">
+                    <img src="{{ foo.image_5.url }}" alt="نمونه 5" class="animated-img"
+                         style="width:100%; height:90px; border-radius:10px; object-fit:cover; aspect-ratio:3/1;">
+                    <img src="{{ foo.image_6.url }}" alt="نمونه 6" class="animated-img"
+                         style="width:100%; height:90px; border-radius:10px; object-fit:cover; aspect-ratio:3/1;">
+                {% endfor %}
+
+
+            </div>
+        </div>
+        <div id="desc-box"
+             style="background:#fff; border-radius:16px; box-shadow:0 2px 16px rgba(80,201,195,0.13); padding:32px 64px; min-width:600px; max-width:950px; flex:1; display:flex; flex-direction:column; justify-content:flex-start; align-items:flex-start; order:2; height:auto;">
+            <div style="font-size:1.13rem; font-weight:bold; color:#232526; margin-bottom:12px;">توضیحات</div>
+            {% for foo in basic %}
+                <div style="font-size:1rem; color:#444; line-height:1.9;">{{ foo.description_3 }}</div>
+            {% endfor %}
+
+
+        </div>
+        <div id="team-how-box"
+             style="background:#fff; border-radius:16px; box-shadow:0 2px 16px rgba(80,201,195,0.13); padding:32px 64px; min-width:600px; max-width:950px; flex:1; display:flex; flex-direction:column; justify-content:flex-start; align-items:flex-start; order:3; height:auto; margin-right:36px;">
+            <div style="font-size:1.13rem; font-weight:bold; color:#232526; margin-bottom:12px;">نحوه کار با تیم ما
+            </div>
+            {% for foo in basic %}
+                <div style="font-size:1rem; color:#444; line-height:1.9;">{{ foo.description_4 }}</div>
+            {% endfor %}
+
+
+        </div>
+    </div>
+    <div style="display: flex; justify-content: center; align-items: flex-start; max-width: 1100px; margin: 48px auto 40px auto;">
+        <div class="team-table-container"
+             style="max-width:600px; min-width:320px; width:100%; display:flex; flex-direction:column; align-items:center;">
+            <div class="team-table-title">تیم ما</div>
+            <table class="team-table" style="width:90%; margin: 0 auto;">
+                <thead>
+                <tr>
+                    <th>نام</th>
+                    <th>نام خانوادگی</th>
+                    <th>سن</th>
+                    <th>توانایی‌ها</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for foo in realtor %}
+                    <tr>
+                        <td>{{ foo.first_name }}</td>
+                        <td>{{ foo.last_name }}</td>
+                        <td>{{ foo.age }}</td>
+                        <td>{{ foo.skills }}</td>
+                    </tr>
+                {% endfor %}
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    </body>
+
+{% endblock %}
+
+</html>

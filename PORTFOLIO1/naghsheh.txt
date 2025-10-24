@@ -1,0 +1,12 @@
+realtors
+
+first_name = char
+last_name = char
+title_0 = char
+title_1 = char
+skills = char
+email = char
+instagram = char
+telegram = char
+image = img
+age = int
